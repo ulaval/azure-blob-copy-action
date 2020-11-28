@@ -1,6 +1,6 @@
-import * as core from '@actions/core';
-import { AzureBlobStorage } from './blobstorages/azure';
-import { FilesService } from './blobstorages/files';
+import * as core from "@actions/core";
+import { AzureBlobStorage } from "./blobstorages/azure";
+import { FilesService } from "./blobstorages/files";
 
 export class CopyParameters {
   constructor(public src: string, public dest: string) {
@@ -18,7 +18,7 @@ async function doUpload(params: CopyParameters): Promise<void> {
   const srcBlobStorage = await FilesService.create(params.src, "read");
   const destBlobStorage = await AzureBlobStorage.create(params.dest);
 
-  let i=0;
+  let i = 0;
   await srcBlobStorage.walkFiles(async (path: string) => {
     await destBlobStorage.uploadFile(path);
     ++i;
