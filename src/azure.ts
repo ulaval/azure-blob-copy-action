@@ -1,5 +1,6 @@
-import { BlobServiceClient, ContainerClient } from "@azure/storage-blob";
+import { BlobHTTPHeaders, BlobServiceClient, ContainerClient } from "@azure/storage-blob";
 import * as Path from "path";
+import { resolveContentType } from "./contenttype";
 import * as files from "./files";
 
 export class Blob {}
@@ -30,10 +31,16 @@ export class AzureBlobStorage {
     return i;
   }
 
-  async uploadFile(rootPath: string, filePath: string): Promise<void> {
+  async uploadFile(rootPath: string, filePath: string, contentTypeHeaders: BlobHTTPHeaders = {}): Promise<void> {
     const relativePath = Path.relative(rootPath, filePath);
-    const blockBlobClient = this.containerClient.getBlockBlobClient(relativePath);
-    await blockBlobClient.uploadFile(filePath.replace(/\\/g, "/"));
+    const blobName = relativePath.replace(/\\/g, "/");
+
+    if (!contentTypeHeaders.blobContentType) {
+      contentTypeHeaders.blobContentType = resolveContentType(relativePath) || undefined;
+    }
+
+    const blockBlobClient = this.containerClient.getBlockBlobClient(blobName);
+    await blockBlobClient.uploadFile(filePath, { blobHTTPHeaders: contentTypeHeaders });
   }
 
   async downloadFile(srcBlobPath: string, destFilePath: string): Promise<void> {
