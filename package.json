@@ -1,5 +1,5 @@
 {
-  "name": "azure-blob-copy-action",
+  "name": "@ulaval/azure-blob-copy-action",
   "version": "0.0.1",
   "description": "Github action to allow copying to and from Azure Blob Storage",
   "main": "dist/main.js",
@@ -37,6 +37,8 @@
     "typescript": "^4.1.2"
   },
   "dependencies": {
-    "@actions/core": "^1.2.6"
+    "@actions/core": "^1.2.6",
+    "@azure/storage-blob": "^12.3.0",
+    "mime-types": "^2.1.27"
   }
 }

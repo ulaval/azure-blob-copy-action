@@ -9,6 +9,6 @@ test("walkFiles", async () => {
     files.push(path);
   });
 
-  expect(files).toContain(path.resolve("package.json"));
-  expect(files).toContain(path.resolve(path.join("dist", "index.js")));
+  expect(files).toContain("package.json");
+  expect(files).toContain(path.join("dist", "index.js"));
 });
