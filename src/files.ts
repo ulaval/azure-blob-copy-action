@@ -23,17 +23,3 @@ export async function walkFiles(rootPath: string, callback: (path: string) => Pr
 
   await _walk(rootPath);
 }
-
-export class FilesService {
-  static async create(rootPath: string, mode: "read" | "write"): Promise<FilesService> {
-    rootPath = Path.normalize(rootPath);
-    await Fs.access(rootPath, mode == "read" ? FsConstants.R_OK : FsConstants.R_OK | FsConstants.W_OK);
-    return new FilesService(rootPath);
-  }
-
-  constructor(private rootpath: string) {}
-
-  async walkFiles(callback: (path: string) => Promise<void>): Promise<void> {
-    await walkFiles(this.rootpath, callback);
-  }
-}
