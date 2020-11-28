@@ -7,6 +7,10 @@ on:
     branches: ["*"]
 
   workflow_dispatch:
+    inputs:
+      version:
+        description: "If version is specified, does an official build which will create a new commit and a tag."
+        required: false
 
 jobs:
   build:
@@ -31,3 +35,14 @@ jobs:
         run: npm run test
         env:
           CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+
+      - name: release
+        if: github.event.inputs.version
+        run: |
+          echo "Releasing official build with version ${{ github.event.inputs.version }}..."
+          git config user.email "github@ulaval.ca"
+          git config user.name "Github actions"
+          git add .
+          git commit -m "${{ github.event.inputs.version }}"
+          git tag -f -m "${{ github.event.inputs.version }}" ${{ github.event.inputs.version }}
+          git push --follow-tags
