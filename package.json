@@ -2,7 +2,7 @@
   "name": "@ulaval/azure-blob-copy-action",
   "version": "0.0.1",
   "description": "Github action to allow copying to and from Azure Blob Storage",
-  "main": "dist/main.js",
+  "main": "dist/index.js",
   "scripts": {
     "clean": "rimraf dist/js && rimraf dits/tests",
     "compile": "tsc",

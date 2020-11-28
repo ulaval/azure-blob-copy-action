@@ -4,13 +4,20 @@ branding:
   icon: "copy"
   color: "red"
 inputs:
-  src:
-    description: Source folder to copy from. This can either be an absolute path, a relative path or an Azure connection string
+  action:
+    description: Either upload or download
     required: true
-  dest:
-    description: Source folder to copy from. This can either be an absolute path, a relative path or an Azure connection string
+    default: upload
+  connection_string:
+    description: Azure Blob Storage connection string
+    required: true
+  container_name:
+    description: Azure Blob Storage container name
+    required: true
+  local_directory:
+    description: Local directory to copy from or to. This can either be an absolute path or a relative path.
     required: true
 
 runs:
   using: node12
-  main: dist/main.js
+  main: dist/index.js

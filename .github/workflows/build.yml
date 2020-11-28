@@ -39,9 +39,10 @@ jobs:
       - name: upload integration test
         uses: ./
         with:
-          src: ./github
-          dest: ${{ secrets.CONNECTION_STRING }}
-          container: tests
+          action: upload
+          connection_string: ${{ secrets.CONNECTION_STRING }}
+          container_name: tests
+          local_directory: ./github
 
       - name: release
         if: github.event.inputs.version

@@ -170,32 +170,42 @@ exports.copy = exports.CopyParameters = void 0;
 const core = __importStar(__webpack_require__(2186));
 const azure_1 = __webpack_require__(2961);
 class CopyParameters {
-    constructor(src, dest, container) {
-        this.src = src;
-        this.dest = dest;
-        this.container = container;
-        if (!src) {
-            throw new Error("The src input is required.");
+    constructor(action, connectionString, containerName, localDirectory) {
+        this.action = action;
+        this.connectionString = connectionString;
+        this.containerName = containerName;
+        this.localDirectory = localDirectory;
+        if (!(action === "upload" || action === "download")) {
+            throw new Error("The action input is required and must be 'upload' or 'download'.");
         }
-        if (!dest) {
-            throw new Error("The dest input is required.");
+        if (!connectionString) {
+            throw new Error("The connection_string input is required.");
         }
-        if (!container) {
-            throw new Error("The container input is required.");
+        if (!containerName) {
+            throw new Error("The container_name input is required.");
         }
+        if (!localDirectory) {
+            throw new Error("The local_directory input is required.");
+        }
+    }
+    isUpload() {
+        return this.action === "upload";
     }
 }
 exports.CopyParameters = CopyParameters;
 function doUpload(params) {
     return __awaiter(this, void 0, void 0, function* () {
-        const destBlobStorage = yield azure_1.AzureBlobStorage.create(params.dest, params.container);
-        const count = destBlobStorage.uploadFiles(params.src);
+        const destBlobStorage = yield azure_1.AzureBlobStorage.create(params.connectionString, params.containerName);
+        const count = destBlobStorage.uploadFiles(params.localDirectory);
         core.info(`Copied ${count} blobs successfully.`);
     });
 }
 function copy(params) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield doUpload(params);
+        if (params.isUpload()) {
+            return yield doUpload(params);
+        }
+        throw new Error("Download is not yet supported.");
     });
 }
 exports.copy = copy;
@@ -310,10 +320,11 @@ const copy_1 = __webpack_require__(6458);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         // Parameters from the developer in their GitHub Actions workflow
-        const src = core.getInput("src", { required: true });
-        const dest = core.getInput("dest", { required: true });
-        const container = core.getInput("container", { required: true });
-        return copy_1.copy(new copy_1.CopyParameters(src, dest, container));
+        const action = core.getInput("action", { required: true });
+        const connectionString = core.getInput("connection_string", { required: true });
+        const containerName = core.getInput("container_name", { required: true });
+        const localDirectory = core.getInput("local_directory", { required: true });
+        return copy_1.copy(new copy_1.CopyParameters(action, connectionString, containerName, localDirectory));
     });
 }
 run().catch((e) => {

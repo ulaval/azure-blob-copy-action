@@ -3,11 +3,12 @@ import { copy, CopyParameters } from "./copy";
 
 async function run(): Promise<void> {
   // Parameters from the developer in their GitHub Actions workflow
-  const src = core.getInput("src", { required: true });
-  const dest = core.getInput("dest", { required: true });
-  const container = core.getInput("container", { required: true });
+  const action = core.getInput("action", { required: true });
+  const connectionString = core.getInput("connection_string", { required: true });
+  const containerName = core.getInput("container_name", { required: true });
+  const localDirectory = core.getInput("local_directory", { required: true });
 
-  return copy(new CopyParameters(src, dest, container));
+  return copy(new CopyParameters(action, connectionString, containerName, localDirectory));
 }
 
 run().catch((e) => {
