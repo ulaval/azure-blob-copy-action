@@ -35,3 +35,11 @@ test("uploadFile", async () => {
 
   expect(fs.readFileSync(destPath, { encoding: "utf8" })).toBe("Allo");
 });
+
+test("walkBlobs", async () => {
+  const azureBlobStorage = await AzureBlobStorage.create(connectionString, "tests");
+
+  await azureBlobStorage.walkBlobs(async (_blob) => {
+    // TODO
+  });
+});

@@ -5,6 +5,10 @@ export async function checkReadAccess(path: string): Promise<void> {
   await Fs.access(path, FsConstants.R_OK);
 }
 
+export async function checkWriteAccess(path: string): Promise<void> {
+  await Fs.access(path, FsConstants.R_OK | FsConstants.W_OK);
+}
+
 export async function walkFiles(rootPath: string, callback: (path: string) => Promise<void>): Promise<void> {
   async function _walk(dir: string): Promise<void> {
     const files = await Fs.readdir(dir);
