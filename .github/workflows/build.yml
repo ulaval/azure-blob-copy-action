@@ -42,7 +42,7 @@ jobs:
           action: upload
           connection_string: ${{ secrets.CONNECTION_STRING }}
           container_name: tests
-          local_directory: ./github
+          local_directory: .github
 
       - name: release
         if: github.event.inputs.version

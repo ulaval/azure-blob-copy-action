@@ -31,14 +31,16 @@ export class CopyParameters {
 }
 
 async function doUpload(params: CopyParameters): Promise<void> {
+  core.info(`Uploading files from ${params.localDirectory} to the ${params.containerName} container...`);
   const destBlobStorage = await AzureBlobStorage.create(params.connectionString, params.containerName);
-  const count = destBlobStorage.uploadFiles(params.localDirectory);
+  const count = await destBlobStorage.uploadFiles(params.localDirectory);
   core.info(`Copied ${count} blobs successfully.`);
 }
 
 export async function copy(params: CopyParameters): Promise<void> {
   if (params.isUpload()) {
-    return await doUpload(params);
+    await doUpload(params);
+    return;
   }
 
   throw new Error("Download is not yet supported.");

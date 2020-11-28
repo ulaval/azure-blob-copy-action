@@ -1,3 +1,4 @@
+import * as core from "@actions/core";
 import { BlobHTTPHeaders, BlobServiceClient, ContainerClient } from "@azure/storage-blob";
 import * as Path from "path";
 import { resolveContentType } from "./contenttype";
@@ -22,16 +23,17 @@ export class AzureBlobStorage {
   async uploadFiles(rootPath: string): Promise<number> {
     files.checkReadAccess(rootPath);
 
-    let i = 0;
+    const i = [0];
     await files.walkFiles(rootPath, async (filePath: string) => {
       await this.uploadFile(rootPath, filePath);
-      ++i;
+      ++i[0];
     });
 
-    return i;
+    return i[0];
   }
 
   async uploadFile(rootPath: string, filePath: string, contentTypeHeaders: BlobHTTPHeaders = {}): Promise<void> {
+    core.info(`Uploading ${filePath}...`);
     const relativePath = Path.relative(rootPath, filePath);
     const blobName = relativePath.replace(/\\/g, "/");
 
