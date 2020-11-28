@@ -4,11 +4,11 @@
   "description": "Github action to allow copying to and from Azure Blob Storage",
   "main": "dist/main.js",
   "scripts": {
-    "clean": "rimraf dist/js",
+    "clean": "rimraf dist/js && rimraf dits/tests",
     "compile": "tsc",
     "build": "npm run compile && ncc build --license licenses.txt dist/js/main.js",
     "test": "jest",
-    "pre-commit": "npm run rebuild && npm run format && npm run lint && npm run package"
+    "rebuildall": "npm run clean && npm run build && npm run test"
   },
   "repository": {
     "type": "git",
