@@ -36,6 +36,13 @@ jobs:
         env:
           CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
 
+      - name: upload integration test
+        uses: ./
+        with:
+          src: ./github
+          dest: ${{ secrets.CONNECTION_STRING }}
+          container: tests
+
       - name: release
         if: github.event.inputs.version
         run: |
