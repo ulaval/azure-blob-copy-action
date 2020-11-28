@@ -1,0 +1,16 @@
+name: azure-blob-copy-action
+description: Github action to allow copying to and from Azure Blob Storage
+branding:
+  icon: "copy"
+  color: "red"
+inputs:
+  src:
+    description: Source folder to copy from. This can either be an absolute path, a relative path or an Azure connection string
+    required: true
+  dest:
+    description: Source folder to copy from. This can either be an absolute path, a relative path or an Azure connection string
+    required: true
+
+runs:
+  using: node12
+  main: dist/main.js
