@@ -20,6 +20,33 @@ inputs:
   local_directory:
     description: Local directory to copy from or to; this can either be an absolute path or a relative path
     required: true
+  http_headers:
+    description: |
+      YAML document that allows setting http headers on blobs when uploading to Azure.
+
+      The supported headers are: Cache-Control, Content-Type, Content-Encoding, Content-Language, Content-Disposition (case sensitive).
+
+      The yaml document must resolve to an array where each element has a <glob> and <headers> values.
+
+      If a file is matched at multiple times, the first match wins.
+
+      By default, the Content-Type is discovered using mime-db mostly using UTF-8 charset.
+
+      For example:
+
+      http_headers: |
+        - glob: "**/*.js"
+          headers:
+            Cache-Control: public, max-age=604800, immutable
+            Content-Type: application/javascript
+            Content-Encoding: gzip
+            Content-Language: fr-CA
+            Content-Disposition: inline
+
+        - glob: "**/*":
+          headers:
+            Cache-Control: public, no-cache
+    required: false
 
 runs:
   using: node12

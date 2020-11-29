@@ -2,8 +2,8 @@ import * as core from "@actions/core";
 import * as azure from "@azure/storage-blob";
 import { promises as fs } from "fs";
 import path, * as Path from "path";
-import { resolveContentType } from "./contenttype";
 import * as files from "./files";
+import { resolveHttpHeaders } from "./httpheaders";
 
 export interface AzureConnectionOptions {
   readonly connectionString: string;
@@ -15,7 +15,16 @@ export interface AzureUploadDownloadOptions {
   readonly blobDirectory?: string;
 }
 
+// Key is a glob pattern while value represents the real headers
+export type GlobHttpHeaders = {
+  glob: string,
+  httpHeaders: azure.BlobHTTPHeaders
+};
+
+export type HttpHeadersOptions = GlobHttpHeaders[];
+
 export interface AzureUploadOptions extends AzureUploadDownloadOptions {
+  httpHeaders?: HttpHeadersOptions;
   contentTypeHeaders?: azure.BlobHTTPHeaders;
 }
 
@@ -78,14 +87,12 @@ export class AzureBlobStorage {
 
     blobName = blobName.replace(/\\/g, "/");
 
-    const contentTypeHeaders = uploadOptions.contentTypeHeaders || {};
+    const httpHeaders = resolveHttpHeaders(filePath, uploadOptions);
 
-    if (!contentTypeHeaders.blobContentType) {
-      contentTypeHeaders.blobContentType = resolveContentType(filePath) || undefined;
-    }
+    core.info("Http headers: \n" + JSON.stringify(httpHeaders));
 
     const blockBlobClient = this.containerClient.getBlockBlobClient(blobName);
-    await blockBlobClient.uploadFile(filePath, { blobHTTPHeaders: contentTypeHeaders });
+    await blockBlobClient.uploadFile(filePath, { blobHTTPHeaders: httpHeaders });
   }
 
   async downloadFile(blobName: string, downloadOptions: AzureDownloadOptions): Promise<void> {

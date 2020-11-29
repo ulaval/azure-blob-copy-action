@@ -44,6 +44,10 @@ jobs:
           container_name: tests
           blob_directory: actions_tests
           local_directory: .github
+          http_headers: |
+            - glob: "**/*.yml"
+              headers:
+                cache-control: public, no-cache
 
       - name: download integration test
         uses: ./

@@ -96,6 +96,7 @@ module.exports = {
     {
       files: ["*.ts", "*.tsx"],
       rules: {
+        "comma-dangle": "off",
         "constructor-super": "off",
         "getter-return": "off",
         "no-array-constructor": "off",
@@ -137,7 +138,7 @@ module.exports = {
         "@typescript-eslint/no-misused-new": "error",
         "@typescript-eslint/no-namespace": "error",
         "@typescript-eslint/no-non-null-asserted-optional-chain": "error",
-        "@typescript-eslint/no-non-null-assertion": "warn",
+        "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/no-this-alias": "error",
         "@typescript-eslint/no-var-requires": "error",
         "@typescript-eslint/no-unused-vars": ["warn", { varsIgnorePattern: "_", argsIgnorePattern: "^_" }],
