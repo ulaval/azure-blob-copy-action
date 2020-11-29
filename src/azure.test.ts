@@ -39,7 +39,7 @@ test("uploadFile", async () => {
 test("walkBlobs", async () => {
   const azureBlobStorage = await AzureBlobStorage.create(connectionString, "tests");
 
-  await azureBlobStorage.walkBlobs(async (_blob) => {
+  await azureBlobStorage.walkBlobs(async _blob => {
     // TODO
   });
 });

@@ -3,7 +3,7 @@ import { walkFiles } from "./files";
 
 test("walkFiles", async () => {
   const files: string[] = [];
-  await walkFiles(".", async (path) => {
+  await walkFiles(".", async path => {
     files.push(path);
   });
 

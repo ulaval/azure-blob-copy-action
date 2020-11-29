@@ -57,7 +57,7 @@ export class AzureBlobStorage {
 
   async walkBlobs(
     callback: (blob: azure.BlobItem) => Promise<void>,
-    options: azure.ContainerListBlobsOptions = {}
+    options: azure.ContainerListBlobsOptions = {},
   ): Promise<void> {
     for await (const response of this.containerClient.listBlobsFlat(options).byPage({ maxPageSize: 50 })) {
       for (const blob of response.segment.blobItems) {

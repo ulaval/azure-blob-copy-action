@@ -10,7 +10,7 @@ async function run(): Promise<void> {
   await copy(new CopyParameters(action, connectionString, containerName, localDirectory));
 }
 
-run().catch((e) => {
+run().catch(e => {
   core.setFailed(e.message);
   core.debug(e.stack);
   core.error(e.message);

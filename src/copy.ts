@@ -6,7 +6,7 @@ export class CopyParameters {
     public action: string,
     public connectionString: string,
     public containerName: string,
-    public localDirectory: string
+    public localDirectory: string,
   ) {
     if (!(action === "upload" || action === "download")) {
       throw new Error("The action input is required and must be 'upload' or 'download'.");
