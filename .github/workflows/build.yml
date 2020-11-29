@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "If version is specified, does an official build which will create a new commit and a tag."
+        description: "If version is specified, does an official build which will create a new commit and a tag. Uses vX.X format."
         required: false
 
 jobs:
