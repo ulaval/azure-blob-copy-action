@@ -1,6 +1,7 @@
 import * as core from "@actions/core";
 import * as azure from "@azure/storage-blob";
-import * as Path from "path";
+import { mkdir } from "fs";
+import path, * as Path from "path";
 import { resolveContentType } from "./contenttype";
 import * as files from "./files";
 
@@ -26,7 +27,7 @@ export class AzureBlobStorage {
     const i = [0];
     await files.walkFiles(rootPath, async (filePath: string) => {
       await this.uploadFile(rootPath, filePath);
-      ++i[0];
+      i[0] += 1;
     });
 
     return i[0];
@@ -35,24 +36,15 @@ export class AzureBlobStorage {
   async downloadFiles(destPath: string): Promise<number> {
     files.checkWriteAccess(destPath);
 
-    let i = 1;
-    for await (const response of this.containerClient
-      .listBlobsByHierarchy("/", { prefix: "prefix2/sub1/" })
-      .byPage({ maxPageSize: 2 })) {
-      console.log(`Page ${i++}`);
-      const segment = response.segment;
+    const i: number[] = [0];
 
-      if (segment.blobPrefixes) {
-        for (const prefix of segment.blobPrefixes) {
-          console.log(`\tBlobPrefix: ${prefix.name}`);
-        }
-      }
+    await this.walkBlobs(async blob => {
+      const destFilePath = path.join(destPath, blob.name);
+      await this.downloadFile(blob.name, destFilePath);
+      i[0] += 1;
+    });
 
-      for (const blob of response.segment.blobItems) {
-        console.log(`\tBlobItem: name - ${blob.name}, last modified - ${blob.properties.lastModified}`);
-      }
-    }
-    return 0;
+    return i[0];
   }
 
   async walkBlobs(
@@ -61,8 +53,7 @@ export class AzureBlobStorage {
   ): Promise<void> {
     for await (const response of this.containerClient.listBlobsFlat(options).byPage({ maxPageSize: 50 })) {
       for (const blob of response.segment.blobItems) {
-        console.log(`\tBlobItem: name - ${blob.name}, last modified - ${blob.properties.lastModified}`);
-        callback(blob);
+        await callback(blob);
       }
     }
   }
@@ -81,6 +72,8 @@ export class AzureBlobStorage {
   }
 
   async downloadFile(srcBlobPath: string, destFilePath: string): Promise<void> {
+    core.info(`Downloading ${srcBlobPath}...`);
+    await mkdir(path.dirname(destFilePath), { recursive: true }, () => {/* empty */});
     const blockBlobClient = this.containerClient.getBlockBlobClient(srcBlobPath);
     await blockBlobClient.downloadToFile(destFilePath);
   }

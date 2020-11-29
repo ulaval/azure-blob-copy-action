@@ -20,7 +20,7 @@ export async function walkFiles(rootPath: string, callback: (path: string) => Pr
       if (stat.isDirectory()) {
         await _walk(path);
       } else {
-        callback(path);
+        await callback(path);
       }
     }
   }

@@ -2,6 +2,7 @@ import * as fs from "fs";
 import os from "os";
 import path from "path";
 import { AzureBlobStorage } from "./azure";
+import { walkFiles } from "./files";
 
 function loadParams() {
   const paramsFilename = path.join(os.homedir(), "ulaval", "ulaval.json");
@@ -16,7 +17,7 @@ test("connection strings", async () => {
   await expect(AzureBlobStorage.create(connectionString, "tests")).resolves.toBeDefined();
 });
 
-test("uploadFile", async () => {
+test("upload download file", async () => {
   const azureBlobStorage = await AzureBlobStorage.create(connectionString, "tests");
 
   const folderPath = path.join("dist", "tests");
@@ -42,4 +43,24 @@ test("walkBlobs", async () => {
   await azureBlobStorage.walkBlobs(async _blob => {
     // TODO
   });
+});
+
+test("upload download files", async () => {
+  const downloadedPath = path.join("dist", "tests", "downloaded");
+
+  const azureBlobStorage = await AzureBlobStorage.create(connectionString, "tests");
+
+  const countUploaded = await azureBlobStorage.uploadFiles(".github");
+
+  expect(countUploaded).toBeGreaterThan(0);
+
+  const countDownloaded = await azureBlobStorage.downloadFiles(downloadedPath);
+
+  const i = [0];
+  await walkFiles(downloadedPath, async () => {
+    i[0] += 1;
+  });
+
+  expect(countDownloaded).toBe(i[0]);
+  expect(countDownloaded).toBeGreaterThanOrEqual(countUploaded);
 });

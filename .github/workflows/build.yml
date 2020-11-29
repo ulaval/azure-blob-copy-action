@@ -44,6 +44,14 @@ jobs:
           container_name: tests
           local_directory: .github
 
+      - name: download integration test
+        uses: ./
+        with:
+          action: download
+          connection_string: ${{ secrets.CONNECTION_STRING }}
+          container_name: tests
+          local_directory: dist/tests/downloads
+
       - name: release
         if: github.event.inputs.version
         run: |
