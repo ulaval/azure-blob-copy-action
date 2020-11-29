@@ -42,6 +42,7 @@ jobs:
           action: upload
           connection_string: ${{ secrets.CONNECTION_STRING }}
           container_name: tests
+          blob_directory: actions_tests
           local_directory: .github
 
       - name: download integration test
@@ -50,6 +51,7 @@ jobs:
           action: download
           connection_string: ${{ secrets.CONNECTION_STRING }}
           container_name: tests
+          blob_directory: actions_tests
           local_directory: dist/tests/downloads
 
       - name: release

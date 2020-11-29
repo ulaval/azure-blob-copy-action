@@ -14,8 +14,11 @@ inputs:
   container_name:
     description: Azure Blob Storage container name
     required: true
+  blob_directory:
+    description: Directory in Azure to copy from or to
+    required: false
   local_directory:
-    description: Local directory to copy from or to. This can either be an absolute path or a relative path.
+    description: Local directory to copy from or to; this can either be an absolute path or a relative path
     required: true
 
 runs:

@@ -5,9 +5,10 @@ async function run(): Promise<void> {
   const action = core.getInput("action", { required: true });
   const connectionString = core.getInput("connection_string", { required: true });
   const containerName = core.getInput("container_name", { required: true });
+  const blobDirectory = core.getInput("blob_directory", { required: false });
   const localDirectory = core.getInput("local_directory", { required: true });
 
-  await copy(new CopyParameters(action, connectionString, containerName, localDirectory));
+  await copy(new CopyParameters(action, connectionString, containerName, blobDirectory, localDirectory));
 }
 
 run().catch(e => {

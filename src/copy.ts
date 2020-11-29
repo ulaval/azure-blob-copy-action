@@ -1,12 +1,13 @@
 import * as core from "@actions/core";
-import { AzureBlobStorage } from "./azure";
+import { AzureBlobStorage, AzureConnectionOptions, AzureUploadDownloadOptions } from "./azure";
 
-export class CopyParameters {
+export class CopyParameters implements AzureConnectionOptions, AzureUploadDownloadOptions {
   constructor(
-    public action: string,
-    public connectionString: string,
-    public containerName: string,
-    public localDirectory: string,
+    public readonly action: string,
+    public readonly connectionString: string,
+    public readonly containerName: string,
+    public readonly blobDirectory: string|undefined,
+    public readonly localDirectory: string,
   ) {
     if (!(action === "upload" || action === "download")) {
       throw new Error("The action input is required and must be 'upload' or 'download'.");
@@ -32,15 +33,15 @@ export class CopyParameters {
 
 async function doUpload(params: CopyParameters): Promise<void> {
   core.info(`Uploading files from ${params.localDirectory} to the ${params.containerName} container...`);
-  const destBlobStorage = await AzureBlobStorage.create(params.connectionString, params.containerName);
-  const count = await destBlobStorage.uploadFiles(params.localDirectory);
+  const destBlobStorage = await AzureBlobStorage.create(params);
+  const count = await destBlobStorage.uploadFiles(params);
   core.info(`Copied ${count} blobs successfully.`);
 }
 
 async function doDownload(params: CopyParameters): Promise<void> {
   core.info(`Downloading blobs to ${params.localDirectory} from the ${params.containerName} container...`);
-  const destBlobStorage = await AzureBlobStorage.create(params.connectionString, params.containerName);
-  const count = await destBlobStorage.downloadFiles(params.localDirectory);
+  const destBlobStorage = await AzureBlobStorage.create(params);
+  const count = await destBlobStorage.downloadFiles(params);
   core.info(`Copied ${count} blobs successfully.`);
 }
 
