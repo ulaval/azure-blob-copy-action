@@ -47,7 +47,7 @@ jobs:
           http_headers: |
             - glob: "**/*.yml"
               headers:
-                cache-control: public, no-cache
+                Cache-Control: public, no-cache
 
       - name: download integration test
         uses: ./

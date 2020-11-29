@@ -24,6 +24,8 @@ function mapHttpHeaders(entry: {glob?: string, headers?: any}): GlobHttpHeaders 
 }
 
 export function parseHttpHeaders(yamlInput: string): HttpHeadersOptions {
+  core.info("http_headers: \n" + yamlInput);
+
   if (!yamlInput) {
     return [];
   }

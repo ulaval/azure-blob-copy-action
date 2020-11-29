@@ -10,6 +10,7 @@ test("resolveContentType", () => {
   expect(resolveContentType("test.json")).toBe("application/json; charset=utf-8");
   expect(resolveContentType("test.ico")).toBe("image/vnd.microsoft.icon");
   expect(resolveContentType("test.yml")).toBe("text/yaml; charset=utf-8");
+  expect(resolveContentType("test/test.yml")).toBe("text/yaml; charset=utf-8");
 });
 
 test("resolveHttpHeaders", () => {
