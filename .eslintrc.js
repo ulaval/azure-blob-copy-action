@@ -22,6 +22,7 @@ module.exports = {
     "for-direction": "error",
     "getter-return": "error",
     "indent": ["error", 2],
+    "keyword-spacing": "error",
     "linebreak-style": ["error", "unix"],
     "max-len": ["error", { "code": 120 }],
     "no-async-promise-executor": "error",

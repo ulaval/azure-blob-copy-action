@@ -22,26 +22,22 @@ export class AzureBlobStorage {
   constructor(private containerClient: azure.ContainerClient) {}
 
   async uploadFiles(rootPath: string): Promise<number> {
-    files.checkReadAccess(rootPath);
-
     const i = [0];
     await files.walkFiles(rootPath, async (filePath: string) => {
       await this.uploadFile(rootPath, filePath);
-      i[0] += 1;
+      ++i[0];
     });
 
     return i[0];
   }
 
   async downloadFiles(destPath: string): Promise<number> {
-    files.checkWriteAccess(destPath);
-
     const i: number[] = [0];
 
     await this.walkBlobs(async blob => {
       const destFilePath = path.join(destPath, blob.name);
       await this.downloadFile(blob.name, destFilePath);
-      i[0] += 1;
+      ++i[0];
     });
 
     return i[0];
