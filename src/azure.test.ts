@@ -81,14 +81,19 @@ test("upload download files", async () => {
 });
 
 test("computeDownloadDestFilePath", () => {
-  const dest1 = AzureBlobStorage.computeDownloadDestFilePath("folder1/folder2/myfile.txt", { localDirectory: "." });
-  const dest2 = AzureBlobStorage.computeDownloadDestFilePath("folder1/folder2/myfile.txt",
-    { localDirectory: "dist", blobDirectory: "folder1" });
 
-  expect(dest1).toBe(path.join("folder1", "folder2", "myfile.txt"));
-  expect(dest2).toBe(path.join("dist", "folder2", "myfile.txt"));
-  expect(() => {
-    AzureBlobStorage.computeDownloadDestFilePath("/folder1/folder2/myfile.txt",
-      { localDirectory: "dist", blobDirectory: "/folder1" });
-  }).toThrow("The blobName /folder1 cannot be an absolute path.");
+  expect(AzureBlobStorage.computeDownloadDestFilePath("folder1/folder2/myfile.txt",
+    { localDirectory: "." })).toBe(path.join("folder1", "folder2", "myfile.txt"));
+
+  expect(AzureBlobStorage.computeDownloadDestFilePath("folder1/folder2/myfile.txt",
+    { localDirectory: "dist", blobDirectory: "folder1" })).toBe(path.join("dist", "folder2", "myfile.txt"));
+
+  expect(AzureBlobStorage.computeDownloadDestFilePath("/folder1/folder2/myfile.txt",
+    { localDirectory: "dist", blobDirectory: "/folder1" })).toBe(path.join("dist", "folder2", "myfile.txt"));
+
+  expect(AzureBlobStorage.computeDownloadDestFilePath("folder1/folder2/myfile.txt",
+    { localDirectory: "dist", blobDirectory: "/folder1" })).toBe(path.join("dist", "folder2", "myfile.txt"));
+
+  expect(AzureBlobStorage.computeDownloadDestFilePath("/folder1/folder2/myfile.txt",
+    { localDirectory: "dist", blobDirectory: "folder1" })).toBe(path.join("dist", "folder2", "myfile.txt"));
 });

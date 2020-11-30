@@ -107,14 +107,14 @@ class AzureBlobStorage {
     }
     uploadFile(filePath, uploadOptions) {
         return __awaiter(this, void 0, void 0, function* () {
-            core.info(`Uploading ${filePath}...`);
             let blobName = Path.relative(uploadOptions.localDirectory, filePath);
             if (uploadOptions.blobDirectory) {
-                AzureBlobStorage.checkNotAbsolute(uploadOptions.blobDirectory);
                 blobName = path_1.default.join(uploadOptions.blobDirectory, blobName);
             }
             blobName = blobName.replace(/\\/g, "/");
+            core.info(`Uploading ${filePath} to ${blobName}...`);
             const httpHeaders = httpheaders_1.resolveHttpHeaders(filePath, uploadOptions);
+            core.info("Http headers: \n" + JSON.stringify(httpHeaders));
             const blockBlobClient = this.containerClient.getBlockBlobClient(blobName);
             yield blockBlobClient.uploadFile(filePath, { blobHTTPHeaders: httpHeaders });
         });
@@ -131,8 +131,10 @@ class AzureBlobStorage {
     static computeDownloadDestFilePath(blobName, downloadOptions) {
         let destFilePath = blobName;
         if (downloadOptions.blobDirectory) {
-            AzureBlobStorage.checkNotAbsolute(downloadOptions.blobDirectory);
-            destFilePath = path_1.default.relative(downloadOptions.blobDirectory, blobName);
+            if (!path_1.default.isAbsolute(blobName)) {
+                blobName = path_1.default.join("/", blobName);
+            }
+            destFilePath = path_1.default.relative(path_1.default.join("/", downloadOptions.blobDirectory), blobName);
         }
         return path_1.default.join(downloadOptions.localDirectory, destFilePath);
     }
@@ -335,10 +337,11 @@ exports.resolveHttpHeaders = exports.match = exports.resolveContentType = void 0
 const mime_db_1 = __importDefault(__webpack_require__(7426));
 const mime = __importStar(__webpack_require__(3583));
 const minimatch_1 = __importDefault(__webpack_require__(3973));
+const path_1 = __importDefault(__webpack_require__(5622));
 // Adding utf-8 as default charset for text files
 mime_db_1.default["text/plain"]["charset"] = "UTF-8";
 function resolveContentType(filePath) {
-    return mime.contentType(filePath) || undefined;
+    return mime.contentType(path_1.default.basename(filePath)) || undefined;
 }
 exports.resolveContentType = resolveContentType;
 function findHttpHeadersConfig(filePath, uploadOptions) {
@@ -435,6 +438,7 @@ function mapHttpHeaders(entry) {
     };
 }
 function parseHttpHeaders(yamlInput) {
+    core.info("http_headers: \n" + yamlInput);
     if (!yamlInput) {
         return [];
     }

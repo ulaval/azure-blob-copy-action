@@ -77,15 +77,15 @@ export class AzureBlobStorage {
   }
 
   async uploadFile(filePath: string, uploadOptions: AzureUploadOptions): Promise<void> {
-    core.info(`Uploading ${filePath}...`);
     let blobName = Path.relative(uploadOptions.localDirectory, filePath);
 
     if (uploadOptions.blobDirectory) {
-      AzureBlobStorage.checkNotAbsolute(uploadOptions.blobDirectory);
       blobName = path.join(uploadOptions.blobDirectory, blobName);
     }
 
     blobName = blobName.replace(/\\/g, "/");
+
+    core.info(`Uploading ${filePath} to ${blobName}...`);
 
     const httpHeaders = resolveHttpHeaders(filePath, uploadOptions);
 
@@ -110,16 +110,13 @@ export class AzureBlobStorage {
     let destFilePath = blobName;
 
     if (downloadOptions.blobDirectory) {
-      AzureBlobStorage.checkNotAbsolute(downloadOptions.blobDirectory);
-      destFilePath = path.relative(downloadOptions.blobDirectory, blobName);
+      if (!path.isAbsolute(blobName)) {
+        blobName = path.join("/", blobName);
+      }
+
+      destFilePath = path.relative(path.join("/", downloadOptions.blobDirectory), blobName);
     }
 
     return path.join(downloadOptions.localDirectory, destFilePath);
-  }
-
-  static checkNotAbsolute(blobName: string): void {
-    if (path.isAbsolute(blobName)) {
-      throw new Error(`The blobName ${blobName} cannot be an absolute path.`);
-    }
   }
 }
