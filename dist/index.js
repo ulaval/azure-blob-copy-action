@@ -112,6 +112,9 @@ class AzureBlobStorage {
                 blobName = path_1.default.join(uploadOptions.blobDirectory, blobName);
             }
             blobName = blobName.replace(/\\/g, "/");
+            if (blobName.startsWith("/")) {
+                blobName = blobName.substring(1);
+            }
             core.info(`Uploading ${filePath} to ${blobName}...`);
             const httpHeaders = httpheaders_1.resolveHttpHeaders(filePath, uploadOptions);
             core.info("Http headers: \n" + JSON.stringify(httpHeaders));
@@ -137,11 +140,6 @@ class AzureBlobStorage {
             destFilePath = path_1.default.relative(path_1.default.join("/", downloadOptions.blobDirectory), blobName);
         }
         return path_1.default.join(downloadOptions.localDirectory, destFilePath);
-    }
-    static checkNotAbsolute(blobName) {
-        if (path_1.default.isAbsolute(blobName)) {
-            throw new Error(`The blobName ${blobName} cannot be an absolute path.`);
-        }
     }
 }
 exports.AzureBlobStorage = AzureBlobStorage;

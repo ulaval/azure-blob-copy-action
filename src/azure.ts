@@ -85,6 +85,10 @@ export class AzureBlobStorage {
 
     blobName = blobName.replace(/\\/g, "/");
 
+    if (blobName.startsWith("/")) {
+      blobName = blobName.substring(1);
+    }
+
     core.info(`Uploading ${filePath} to ${blobName}...`);
 
     const httpHeaders = resolveHttpHeaders(filePath, uploadOptions);
