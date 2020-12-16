@@ -15,6 +15,8 @@ module.exports = {
 
   extends: [],
 
+  ignorePatterns: ["dist/**", "node_modules/**", "package-lock.json"],
+
   rules: {
     "arrow-parens": ["error", "as-needed"],
     "comma-dangle": ["error", "always-multiline"],
@@ -127,7 +129,7 @@ module.exports = {
         "@typescript-eslint/ban-ts-comment": "error",
         "@typescript-eslint/ban-types": "error",
         "@typescript-eslint/comma-dangle": ["error", "always-multiline"],
-        "@typescript-eslint/explicit-module-boundary-types": "warn",
+        "@typescript-eslint/explicit-module-boundary-types": "error",
         "@typescript-eslint/no-array-constructor": "error",
         "@typescript-eslint/no-empty-function": "error",
         "@typescript-eslint/no-empty-interface": "error",

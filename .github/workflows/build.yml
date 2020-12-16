@@ -25,10 +25,23 @@ jobs:
         with:
           node-version: 12.x
 
-      - name: npm ci
-        run: npm ci
+      - name: Restore node_modules from cache
+        id: restoreNodeModules
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package*.json') }}
 
-      - name: npm run build
+      - name: Run npm ci
+        if: steps.restoreNodeModules.outputs.cache-hit != 'true'
+        run: npm ci --prefer-offline &> /dev/null
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run build
         run: npm run build
 
       - name: npm run test
