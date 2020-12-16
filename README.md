@@ -5,7 +5,7 @@ Github action to allow copying to and from Azure Blob Storage
 
 ```yaml
 - name: Copy files
-  uses: ulaval/azure-blob-copy-action@main
+  uses: ulaval/azure-blob-copy-action@v1
   with:
     action: upload
     connection_string: ${{ secrets.CONNECTION_STRING }}
